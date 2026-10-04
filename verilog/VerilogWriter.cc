@@ -460,16 +460,10 @@ VerilogWriter::writeAssigns(const Instance *inst)
         // Port name is different from net name.
         std::string port_vname = netVerilogName(std::string(network_->name(port)));
         std::string net_vname = netVerilogName(std::string(network_->name(net)));
-        if (network_->direction(port)->isInput()) {
-          sta::print(stream_, " assign {} = {};\n",
-                     net_vname,
-                     port_vname);
-        }
-        else {
-          sta::print(stream_, " assign {} = {};\n",
-                     port_vname,
-                     net_vname);
-        }
+        bool is_input = network_->direction(port)->isInput();
+        const std::string &lhs = is_input ? net_vname : port_vname;
+        const std::string &rhs = is_input ? port_vname : net_vname;
+        sta::print(stream_, " assign {} = {};\n", lhs, rhs);
       }
     }
   }
